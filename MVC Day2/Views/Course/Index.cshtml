@@ -1,0 +1,41 @@
+﻿@using MVC_Day2.Models.ViewModels
+
+
+@model CourseIndexViewModel
+
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "_NewLayout";
+}
+
+<h1>Index</h1>
+
+<table class="table table-info table-hover table-striped ">
+    <thead >
+        <tr>
+            <th>Course Name</th>
+            <th>Course Degree</th>
+            <th>Course Min Degree</th>
+            <th>Course Hourse</th>
+            <th>Department Name</th>
+        </tr>
+    </thead>
+
+    @for(int i = 0; i < Model.courses.Count(); i++)
+    {
+        <tr>
+            <td>@Model.courses[i].Name</td>
+            <td>@Model.courses[i].Degree</td>
+            <td>@Model.courses[i].MinDegree</td>
+            <td>@Model.courses[i].Hours</td>
+            <td>@Model.CourseNames[i]</td>
+        </tr>
+    }
+</table>
+
+<br />
+<br />
+
+<a class="btn btn-light w-25 m-auto" asp-action="ADD" asp-controller="Course"  >Add Course</a>
+
