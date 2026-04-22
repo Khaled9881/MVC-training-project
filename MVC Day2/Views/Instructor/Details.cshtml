@@ -1,4 +1,7 @@
-﻿@model Instructor
+﻿@using MVC_Day2.Models.ViewModels
+
+@model AllInstructorsViewModel
+
 @{
     ViewData["Title"] = "Details";
 }
@@ -14,22 +17,26 @@
         <th>Salary</th>
     <th>Address</th>
     <th>Home</th>
+    <th>Course Name</th>
+    <th>Department Name</th>
     </thead>
 
     <tr>
 
-        <td>@Model.Id</td>
-        <td>@Model.Name</td>
+        <td>@Model.instructors[0].Id</td>
+        <td>@Model.instructors[0].Name</td>
         <td class="w-25">
-            <img src="@Model.Image" alt="Alternate Text" class="img-fluid object-fit-contain w-25 h-25" />
+            <img src="@Model.instructors[0].Image" alt="Alternate Text" class="img-fluid object-fit-contain w-25 h-25" />
         </td>
-        <td>@Model.Salary</td>
-        <td>@Model.Address</td>
+        <td>@Model.instructors[0].Salary</td>
+        <td>@Model.instructors[0].Address</td>
         <td>
             <a href="@Url.Action("GetAllInstructors", "Instructor")">
                 Home
             </a>
         </td>
+        <td>@Model.CourseNames[0]</td>
+        <td>@Model.DepartmentNames[0]</td>
     </tr>
 
 </table>

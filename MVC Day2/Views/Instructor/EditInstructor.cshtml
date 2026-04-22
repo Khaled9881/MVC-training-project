@@ -1,0 +1,199 @@
+﻿@using MVC_Day2.Models.ViewModels
+
+@model AllInstructorsViewModel
+
+@{
+    ViewData["Title"] = "EditInstructor";
+}
+
+    <div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Profile Header Card -->
+            <div class="card mb-4 shadow-lg border-0">
+                <div class="card-header bg-gradient"
+                     style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem;">
+                    <div class="row align-items-center justify-content-center ">
+                        <div class="col-md-3 text-center mb-3 mb-md-0 ">
+                            @if (!string.IsNullOrEmpty(Model.instructors[0].Image))
+                            {
+                                <img src="@Model.instructors[0].Image" alt="Instructor Image"
+                                     class="rounded-circle border-4 border-white"
+                                     style="width: 120px; height: 120px; object-fit: cover; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+                            }
+                            else
+                            {
+                                <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center border-4 border-white mx-auto"
+                                     style="width: 120px; height: 120px;">
+                                    <i class="bi bi-person-fill text-white" style="font-size: 50px;"></i>
+                                </div>
+                            }
+                        </div>
+                        <div class="col-md-9 ">
+                            <h2 class="mb-1 fw-bold text-primary">@Model.instructors[0].Name</h2>
+                            <p class="mb-0 fs-6">
+                                <i class="bi bi-briefcase"></i> Instructor Profile
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Edit Form -->
+                <div class="card-body p-4">
+                    <form action="/Instructor/SaveEdit" method="post" enctype="multipart/form-data">
+                        <!-- Add hidden input for ID -->
+                        <input type="hidden" name="Id" value="@Model.instructors[0].Id" />
+
+                        <!-- Personal Information Section -->
+                        <div class="section-divider mb-4">
+                            <h5 class="fw-bold text-dark mb-3">
+                                <i class="bi bi-person-badge" style="color: #667eea;"></i> Personal Information
+                            </h5>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-semibold">Full Name</label>
+                                    <input type="text" name="Name" id="Name" class="form-control form-control-lg"
+                                           value="@Model.instructors[0].Name" required>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-semibold">Address</label>
+                                    <input type="text" class="form-control form-control-lg" name="Address" id="Address"
+                                           value="@Model.instructors[0].Address" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Salary</label>
+                                <div class="input-group input-group-lg">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" class="form-control" name="Salary" id="Salary"
+                                           value="@Model.instructors[0].Salary" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Professional Information Section -->
+                        <hr class="my-4">
+                        <div class="section-divider mb-4">
+                            <h5 class="fw-bold text-dark mb-3">
+                                <i class="bi bi-building" style="color: #667eea;"></i> Professional Information
+                            </h5>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-semibold">Department</label>
+                                    <select class="form-select form-select-lg"
+                                            name="Dept_ID"
+                                            required>
+                                        <option value="0">---Select Department----</option>
+                                        @foreach (var dept in ViewBag.Departments)
+                                        {
+                                            <option value="@dept.Id" selected="@(Model.instructors[0].Dept_ID == dept.Id ? "selected" : "")">@dept.Name</option>
+                                        }
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-semibold">Course</label>
+                                    <select class="form-select form-select-lg"
+                                            name="Crs_ID"
+                                            required>
+                                        <option value="0">---Select Course----</option>
+                                        @foreach (var course in ViewBag.Courses)
+                                        {
+                                            <option value="@course.Id" selected="@(Model.instructors[0].Crs_ID == course.Id ? "selected" : "")">@course.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Profile Picture Section -->
+                        <hr class="my-4">
+                        <div class="section-divider mb-4">
+                            <h5 class="fw-bold text-dark mb-3">
+                                <i class="bi bi-image" style="color: #667eea;"></i> Profile Picture
+                            </h5>
+
+                            @if (!string.IsNullOrEmpty(Model.instructors[0].Image))
+                            {
+                                <div class="mb-3 p-3 bg-light rounded text-center">
+                                    <img src="@Model.instructors[0].Image" alt="Instructor Image" class="rounded"
+                                         style="max-width: 250px; max-height: 250px; object-fit: cover;">
+                                    <p class="text-muted small mt-2">Current Profile Picture</p>
+                                </div>
+                            }
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Upload New Picture</label>
+                                <input type="file" class="form-control form-control-lg" name="ImageFile" id="ImageFile"
+                                       accept="image/*">
+                                <small class="form-text text-muted d-block mt-2">
+                                    <i class="bi bi-info-circle"></i> Leave empty to keep current image
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <hr class="my-4">
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="/Instructor/GetAllInstructors" class="btn btn-outline-secondary btn-lg px-5">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-lg px-5">
+                                <i class="bi bi-check-circle"></i> Update Profile
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+
+    .form-control-lg,
+    .form-select-lg {
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+    }
+
+    .section-divider {
+        padding: 1rem 0;
+    }
+
+    .card-header {
+        border-radius: 0.5rem 0.5rem 0 0 !important;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #5568d3 0%, #653a8a 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-outline-secondary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(108, 117, 125, 0.25);
+    }
+
+    .rounded-circle {
+        object-fit: cover;
+    }
+</style>
+
+

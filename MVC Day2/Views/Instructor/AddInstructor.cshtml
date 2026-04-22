@@ -1,0 +1,63 @@
+﻿@using MVC_Day2.Models.ViewModels
+
+@model DepartmentsCoursesViewModel
+
+
+@{
+    ViewData["Title"] = "AddInstructor";
+}
+
+<h1>AddInstructor</h1>
+
+<form action="/Instructor/SaveInstructor" method="post" enctype="multipart/form-data">
+
+    <div class="mb-3">
+        <label  class="form-label">Name</label>
+        <input type="text" name="Name" id="Name" class="form-control" id="" >
+    </div>
+
+
+    <div class="mb-3">
+        <label class="form-label">Image</label>
+        <input type="file" class="form-control" name="ImageFile" id="ImageFile">
+    </div>
+
+
+    <div class="mb-3">
+        <label class="form-label">Salary</label>
+        <input type="number" class="form-control" name="Salary" id="Salary">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Address</label>
+        <input type="text" class="form-control" name="Address" id="Address">
+    </div>
+
+
+    <select class="form form-control m-5" name="Dept_ID" id="dd">
+        <option value="0" selected>---Select Dept----</option>
+        @foreach (var item in Model.Departments)
+        {
+        <option value="@item.Id">@item.Name</option>
+            
+        }
+    </select>
+
+
+    <select class="form form-control m-5" name="Crs_ID" id="cc">
+        <option value="0" selected>---Select Course----</option>
+        @foreach (var item in Model.Courses)
+        {
+            <option  value="@item.Id">@item.Name</option>
+
+        }
+    </select>
+
+    <input type="submit" value="Save" class="btn btn-primary w-50 m-auto d-flex justify-content-center" />
+
+    
+
+</form>
+
+
+
