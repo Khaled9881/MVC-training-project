@@ -2,82 +2,69 @@
 using Microsoft.EntityFrameworkCore;
 using MVC_Day2.Models;
 using MVC_Day2.Models.ViewModels;
+using MVC_Day2.Repository;
 
 namespace MVC_Day2.Controllers
 {
     public class InstructorController : Controller
     {
-        SchoolContext schoolContext = new SchoolContext();
-        public IActionResult Index()
+        IInstructorRepository instructorRepository;
+        ICourseRepository courseRepository;
+        IDepartmentRepository departmentRepository;
+
+
+        public InstructorController(IInstructorRepository instructorRepository,
+        ICourseRepository courseRepository,
+        IDepartmentRepository departmentRepository)
         {
-            return View();
+            this.instructorRepository = instructorRepository;
+            this.courseRepository = courseRepository;
+            this.departmentRepository = departmentRepository;
         }
 
         public IActionResult GetAllInstructors(int pageNumber = 1)
         {
-            int InstructorsCount = schoolContext.Instructors.Count();
-            int PagesCount = (int)Math.Ceiling(InstructorsCount / 10.0);
-
-            //if(pageNumber >= PagesCount)
-            //{
-
-            //}
-
-            var result = schoolContext.Instructors.Skip((pageNumber - 1) * 10).Take(10)
-                .Select(i => new
-                {
-                    Instructor = i,
-                    DeptName = i.Department.Name,
-                    Courses = i.Course.Name
-                }).ToList();
-
-            AllInstructorsViewModel allInstructorsViewModel = new AllInstructorsViewModel()
-            {
-                instructors = result.Select(r => r.Instructor).ToList(),
-                DepartmentNames = result.Select(r => r.DeptName).ToList(),
-                CourseNames = result.Select(r => r.Courses).ToList(),
-                CurrentPage = pageNumber,
-                PagesCount = PagesCount
-            };
-
-            return View("GetAllInstructors", allInstructorsViewModel);
+            return View("GetAllInstructors",
+                instructorRepository.Get_ALL_Instructor_Relevant_Data(pageNumber));
         }
 
         public IActionResult Details(int id)
         {
 
-            var result = schoolContext.Instructors.Where(i => i.Id == id)
-                .Select(i => new
-                {
-                    Instructor = i,
-                    DepartmentName = i.Department.Name,
-                    CourseName = i.Course.Name
-                });
-
-            AllInstructorsViewModel allInstructorsViewModel = new AllInstructorsViewModel()
-            {
-                instructors = result.Select(r => r.Instructor).ToList(),
-                DepartmentNames = result.Select(r => r.DepartmentName).ToList(),
-                CourseNames = result.Select(r => r.CourseName).ToList()
-            };
+            AllInstructorsViewModel? allInstructorsViewModel =
+                instructorRepository.GetInstrucotrCourseDeptNames(id);
 
             if (allInstructorsViewModel == null)
-            {
                 return NotFound();
-            }
+
             return View("Details", allInstructorsViewModel);
         }
 
-        public IActionResult AddInstructor(int id)
+
+        public IActionResult AddInstructor()
         {
             DepartmentsCoursesViewModel departmentsCoursesViewModel = new DepartmentsCoursesViewModel();
-            departmentsCoursesViewModel.Departments = schoolContext.Departments.ToList();
-            departmentsCoursesViewModel.Courses = schoolContext.Courses.ToList();
+            departmentsCoursesViewModel.Departments = departmentRepository.GetAll();
+            departmentsCoursesViewModel.Courses = courseRepository.GetAll();
             return View("AddInstructor", departmentsCoursesViewModel);
         }
 
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult SaveInstructor(Instructor instructor, IFormFile ImageFile)
         {
+            if (!ModelState.IsValid)
+            {
+                var vm = new DepartmentsCoursesViewModel
+                {
+                    Departments = departmentRepository.GetAll(),
+                    Courses = courseRepository.GetAll()
+                };
+                return View("AddInstructor", vm);
+            }
+
+
 
             var fileName = ImageFile.FileName;
 
@@ -91,21 +78,21 @@ namespace MVC_Day2.Controllers
                 Image = "\\Images\\" + fileName,
             };
 
-            schoolContext.Instructors.Add(newInstructor);
-            schoolContext.SaveChanges();
+            instructorRepository.Add(newInstructor);
+            instructorRepository.Save();
             return RedirectToAction("GetAllInstructors");
         }
 
         public ActionResult EditInstructor(int id)
         {
 
-            var instructor = schoolContext.Instructors.Where(i => i.Id == id).ToList();
+            var instructor = instructorRepository.GetAll().Where(i => i.Id == id).ToList();
 
             AllInstructorsViewModel allInstructorsViewModel = new AllInstructorsViewModel()
             {
                 instructors = instructor,
-                DepartmentNames = schoolContext.Departments.Select(d => d.Name).ToList(),
-                CourseNames = schoolContext.Courses.Select(c => c.Name).ToList()
+                DepartmentNames = departmentRepository.GetAll().Select(d => d.Name).ToList(),
+                CourseNames = courseRepository.GetAll().Select(c => c.Name).ToList()
             };
 
             if (allInstructorsViewModel == null)
@@ -113,21 +100,18 @@ namespace MVC_Day2.Controllers
                 return NotFound();
             }
 
-            ViewBag.Departments = schoolContext.Departments.ToList();
-            ViewBag.Courses = schoolContext.Courses.ToList();
+            ViewBag.Departments = departmentRepository.GetAll();
+            ViewBag.Courses = courseRepository.GetAll();
             return View("EditInstructor", allInstructorsViewModel);
-
-
-            //Instructor instructor = schoolContext.Instructors.Find(id);
-            //return View("EditInstructor", instructor);
         }
 
-
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult SaveEdit(Instructor instructor, IFormFile ImageFile)
         {
 
             // Find the existing instructor by ID
-            var existingInstructor = schoolContext.Instructors.Find(instructor.Id);
+            var existingInstructor = instructorRepository.GetById(instructor.Id);
 
             if (existingInstructor == null)
             {
@@ -147,19 +131,17 @@ namespace MVC_Day2.Controllers
                 existingInstructor.Image = "\\Images\\" + fileName;
             }
 
-            schoolContext.SaveChanges();
+            instructorRepository.Save();
             return RedirectToAction("GetAllInstructors");
         }
 
-
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult DeleteInstructor(int id)
         {
-            Instructor instructor = schoolContext.Instructors.Find(id);
-
-            schoolContext.Instructors.Remove(instructor);
-            schoolContext.SaveChanges(true);
+            instructorRepository.Delete(id);
+            instructorRepository.Save();
             return RedirectToAction("GetAllInstructors");
-
         }
 
 

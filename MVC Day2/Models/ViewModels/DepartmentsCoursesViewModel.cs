@@ -2,8 +2,8 @@
 {
     public class DepartmentsCoursesViewModel
     {
-        public List<Department> Departments { get; set; }
-        public List<Course> Courses { get; set; }
+        public IEnumerable<Department> Departments { get; set; }
+        public IEnumerable<Course> Courses { get; set; }
 
     }
 }

@@ -3,6 +3,6 @@
     public class CourseIndexViewModel
     {
         public List<Course> courses { get; set; }
-        public List<string> CourseNames { get; set; }
+        public List<string> DepartmentNames { get; set; }
     }
 }

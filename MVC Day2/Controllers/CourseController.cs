@@ -2,37 +2,40 @@
 using Microsoft.EntityFrameworkCore;
 using MVC_Day2.Models;
 using MVC_Day2.Models.ViewModels;
+using MVC_Day2.Repository;
 
 namespace MVC_Day2.Controllers
 {
     public class CourseController : Controller
     {
-        public SchoolContext context = new SchoolContext();
+
+        ICourseRepository courseRepository;
+        IDepartmentRepository departmentRepository;
+
+        public CourseController(ICourseRepository _courseRepository, IDepartmentRepository _departmentRepository)
+        {
+            courseRepository = _courseRepository;
+            departmentRepository = _departmentRepository;
+        }
+
+        private AddCourseViewModel LoadAddCourseViewModel()
+        {
+            return new AddCourseViewModel()
+            {
+                departments = departmentRepository.GetAll()
+            };
+        }
+
         public IActionResult Index()
         {
-            var result = context.Courses.Select(i => new
-            {
-                Courses = i,
-                DeptName = i.Department.Name
-            }).ToList();
-
-            CourseIndexViewModel CVM = new CourseIndexViewModel()
-            {
-                courses = result.Select(c => c.Courses).ToList(),
-                CourseNames = result.Select(s => s.DeptName).ToList()
-            };
-
+            //⚠️⚠️ is it right to have a view model as a return
+            CourseIndexViewModel CVM = courseRepository.GetCoursesWithDeptNames();
             return View("Index", CVM);
         }
 
         public IActionResult ADD()
         {
-            List<Department> departments = context.Departments.ToList();
-            AddCourseViewModel ACV = new AddCourseViewModel()
-            {
-                departments = departments
-            };
-            return View("AddCourse", ACV);
+            return View("AddCourse", LoadAddCourseViewModel());
         }
 
 
@@ -41,11 +44,8 @@ namespace MVC_Day2.Controllers
         public IActionResult ADDComplete(AddCourseViewModel course)
         {
 
-            if (ModelState.IsValid == false)
-            {
-                course.departments = context.Departments.ToList();
-                return View("AddCourse", course);
-            }
+            if (!ModelState.IsValid)
+                return View("AddCourse", LoadAddCourseViewModel());
 
             Course newCourse = new Course()
             {
@@ -56,9 +56,8 @@ namespace MVC_Day2.Controllers
                 Dept_Id = course.Dept_Id,
             };
 
-            //Course AddedCourse = context.Courses.FirstOrDefault(s => s.Id == course.Id);
-            context.Courses.Add(newCourse);
-            context.SaveChanges();
+            courseRepository.Add(newCourse);
+            courseRepository.Save();
             return RedirectToAction("Index");
         }
 
@@ -70,6 +69,8 @@ namespace MVC_Day2.Controllers
 
             return Json("Minimum Degree must be less than total degree");
         }
+
+
 
     }
 

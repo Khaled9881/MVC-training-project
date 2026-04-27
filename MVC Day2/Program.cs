@@ -1,3 +1,6 @@
+using MVC_Day2.Models;
+using MVC_Day2.Repository;
+
 namespace MVC_Day2
 {
     public class Program
@@ -8,6 +11,14 @@ namespace MVC_Day2
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+
+            // why this
+            builder.Services.AddScoped<SchoolContext>();
+
+            builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+            builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+            builder.Services.AddScoped<IInstructorRepository, InstructorRepository>();
 
             var app = builder.Build();
 

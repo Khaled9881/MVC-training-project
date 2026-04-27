@@ -21,6 +21,6 @@ namespace MVC_Day2.Models.ViewModels
         public int Hours { get; set; }
 
         public int Dept_Id { get; set; }
-        public List<Department>? departments { get; set; }
+        public IEnumerable<Department>? departments { get; set; }
     }
 }
