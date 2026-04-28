@@ -1,0 +1,17 @@
+﻿@using MVC_Day2.Models.ViewModels
+
+@model TraineeCourseViewModel;
+@{
+    ViewData["Title"] = "TraineeCourse";
+}
+
+<h1>TraineeCourse</h1>
+
+<div style="color:@ViewBag.color">
+
+    <p>Trainee Name: @Model.TraineeName</p>
+    <p>Course Name: @Model.CourseName</p>
+    <p>Degree: @Model.Degree</p>
+    <p>Status: @Model.Status</p>
+
+</div>

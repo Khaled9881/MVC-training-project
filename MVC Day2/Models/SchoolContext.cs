@@ -11,16 +11,19 @@ namespace MVC_Day2.Models
 
         public DbSet<CrsResuly> CrsResults { get; set; }
 
-        public SchoolContext() : base()
+
+        public SchoolContext(DbContextOptions<SchoolContext> options) : base(options)
         {
 
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer("Server=.;Database=School;Trusted_Connection=True;TrustServerCertificate=True;");
-            base.OnConfiguring(optionsBuilder);
-        }
+
+
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    optionsBuilder.UseSqlServer("Server=.;Database=School;Trusted_Connection=True;TrustServerCertificate=True;");
+        //    base.OnConfiguring(optionsBuilder);
+        //}
 
 
     }

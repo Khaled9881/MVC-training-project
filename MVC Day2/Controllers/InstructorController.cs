@@ -41,7 +41,7 @@ namespace MVC_Day2.Controllers
         }
 
 
-        public IActionResult AddInstructor()
+        public IActionResult AddInstructor(int id)
         {
             DepartmentsCoursesViewModel departmentsCoursesViewModel = new DepartmentsCoursesViewModel();
             departmentsCoursesViewModel.Departments = departmentRepository.GetAll();
@@ -50,8 +50,8 @@ namespace MVC_Day2.Controllers
         }
 
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
         public IActionResult SaveInstructor(Instructor instructor, IFormFile ImageFile)
         {
             if (!ModelState.IsValid)
@@ -105,8 +105,8 @@ namespace MVC_Day2.Controllers
             return View("EditInstructor", allInstructorsViewModel);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
         public IActionResult SaveEdit(Instructor instructor, IFormFile ImageFile)
         {
 
@@ -135,8 +135,8 @@ namespace MVC_Day2.Controllers
             return RedirectToAction("GetAllInstructors");
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
         public IActionResult DeleteInstructor(int id)
         {
             instructorRepository.Delete(id);

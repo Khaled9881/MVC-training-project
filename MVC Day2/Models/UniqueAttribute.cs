@@ -5,18 +5,32 @@ namespace MVC_Day2.Models
 {
     public class UniqueAttribute : ValidationAttribute
     {
-        SchoolContext context = new SchoolContext();
-        protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+        protected override ValidationResult? IsValid(
+            object? value,
+            ValidationContext validationContext)
         {
             string? name = value?.ToString();
-            AddCourseViewModel? course = validationContext.ObjectInstance as AddCourseViewModel;
-            Course? SCourse = context.Courses.FirstOrDefault(c => c.Name == name && c.Dept_Id == course.Dept_Id);
+
+            // Get DbContext from DI container
+            SchoolContext? context =
+                validationContext.GetRequiredService<SchoolContext>();
+
+            AddCourseViewModel? course =
+                validationContext.ObjectInstance as AddCourseViewModel;
+
+            if (context == null || course == null)
+                return ValidationResult.Success;
+
+            Course? SCourse =
+                context.Courses.FirstOrDefault(
+                    c => c.Name == name &&
+                         c.Dept_Id == course.Dept_Id);
 
             if (SCourse == null)
                 return ValidationResult.Success;
 
-            return new ValidationResult($"Name \"{name}\" Already Existed");
-
+            return new ValidationResult(
+                $"Name \"{name}\" Already Existed");
         }
     }
 }
