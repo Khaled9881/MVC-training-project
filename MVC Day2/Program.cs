@@ -36,7 +36,9 @@ namespace MVC_Day2
             {
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireDigit = false;
-                options.Password.RequiredLength = 4;
+                options.Password.RequiredLength = 3;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
             }).AddEntityFrameworkStores<SchoolContext>();
 
             builder.Services.AddScoped<ICourseRepository, CourseRepository>();

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MVC_Day2.Models;
 using MVC_Day2.Models.ViewModels;
@@ -22,6 +23,8 @@ namespace MVC_Day2.Controllers
             this.departmentRepository = departmentRepository;
         }
 
+
+        [Authorize]
         public IActionResult GetAllInstructors(int pageNumber = 1)
         {
             return View("GetAllInstructors",

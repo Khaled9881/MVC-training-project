@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MVC_Day2.Models;
 using MVC_Day2.Models.ViewModels;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace MVC_Day2.Controllers
@@ -73,6 +75,45 @@ namespace MVC_Day2.Controllers
 
         }
 
+        [HttpGet]
+        public IActionResult LogIn()
+        {
+            return View("login");
+        }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logged(LoginViewModel loginViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                ApplicationUser user = await userManager.FindByNameAsync(loginViewModel.UserName);
+
+                if (user != null)
+                {
+                    bool found = await userManager.CheckPasswordAsync(user, loginViewModel.Password);
+
+                    if (found)
+                    {
+                        List<Claim> extraClaims = new List<Claim>();
+                        extraClaims.Add(new Claim("Address", user.Address));
+
+                        await signInManager.SignInWithClaimsAsync(user, loginViewModel.RememberMe, extraClaims);
+
+                        return RedirectToAction("GetAllInstructors", "Instructor");
+                    }
+                }
+            }
+            ModelState.AddModelError("", "Invalid Account Credentials");
+            return View("LogIn", loginViewModel);
+        }
+
+
+        public async Task<IActionResult> SignOut()
+        {
+            await signInManager.SignOutAsync();
+            return View("login");
+
+        }
     }
 }
