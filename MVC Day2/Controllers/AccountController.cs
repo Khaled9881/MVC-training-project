@@ -61,7 +61,7 @@ namespace MVC_Day2.Controllers
                 if (result.Succeeded)
                 {
                     IdentityResult roleResult = await userManager.AddToRoleAsync(user,
-                        "Admin");
+                        "Seller");
 
                     await signInManager.SignInAsync(user, isPersistent: false);
                     return RedirectToAction("GetAllInstructors", "Instructor");
@@ -112,8 +112,10 @@ namespace MVC_Day2.Controllers
         public async Task<IActionResult> SignOut()
         {
             await signInManager.SignOutAsync();
-            return View("login");
+            return RedirectToAction("LogIn");
 
         }
+
+
     }
 }
