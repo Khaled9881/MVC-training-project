@@ -1,4 +1,4 @@
-﻿@model AccountRegisterViewModel
+﻿@* @model AccountRegisterViewModel
 
 <div class="container mt-5">
     <div class="row justify-content-center">
@@ -47,6 +47,343 @@
             </div>
         </div>
     </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+} *@
+
+
+
+@model AccountRegisterViewModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap');
+
+    .register-wrapper {
+        min-height: 100vh;
+        display: flex;
+        align-items: stretch;
+        margin: -20px;
+        font-family: 'DM Sans', sans-serif;
+    }
+
+    .register-left {
+        flex: 1;
+        background: #0f0f0f;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 60px;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .register-left::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(83,74,183,0.2) 0%, transparent 70%);
+            top: -120px;
+            right: -100px;
+            pointer-events: none;
+        }
+
+        .register-left::after {
+            content: '';
+            position: absolute;
+            width: 350px;
+            height: 350px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(29,158,117,0.18) 0%, transparent 70%);
+            bottom: -60px;
+            left: -60px;
+            pointer-events: none;
+        }
+
+    .brand-logo {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.8rem;
+        color: #ffffff;
+        letter-spacing: -1px;
+        margin-bottom: 12px;
+        position: relative;
+        z-index: 1;
+    }
+
+        .brand-logo span {
+            color: #1D9E75;
+        }
+
+    .brand-tagline {
+        font-size: 0.85rem;
+        color: rgba(255,255,255,0.35);
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        position: relative;
+        z-index: 1;
+    }
+
+    .decorative-line {
+        width: 60px;
+        height: 1px;
+        background: linear-gradient(90deg, #1D9E75, transparent);
+        margin: 36px auto;
+        position: relative;
+        z-index: 1;
+    }
+
+    .steps-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        position: relative;
+        z-index: 1;
+        max-width: 300px;
+    }
+
+        .steps-list li {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+    .step-num {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: 1px solid rgba(29,158,117,0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: #1D9E75;
+        flex-shrink: 0;
+    }
+
+    .step-text {
+        font-size: 0.9rem;
+        color: rgba(255,255,255,0.55);
+        line-height: 1.4;
+    }
+
+    .register-right {
+        flex: 1.2;
+        background: #ffffff;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 50px 80px;
+        overflow-y: auto;
+    }
+
+    .register-heading {
+        font-family: 'Playfair Display', serif;
+        font-size: 2rem;
+        color: #0f0f0f;
+        margin-bottom: 6px;
+        font-weight: 700;
+    }
+
+    .register-subheading {
+        font-size: 0.9rem;
+        color: #888780;
+        margin-bottom: 36px;
+    }
+
+        .register-subheading a {
+            color: #1D9E75;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: #444441;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 7px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 13px 16px;
+            border: 1.5px solid #e8e8e8;
+            border-radius: 10px;
+            font-size: 0.92rem;
+            font-family: 'DM Sans', sans-serif;
+            color: #0f0f0f;
+            background: #fafafa;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+            .form-group input:focus {
+                border-color: #1D9E75;
+                background: #ffffff;
+                box-shadow: 0 0 0 4px rgba(29,158,117,0.08);
+            }
+
+    .field-error {
+        font-size: 0.78rem;
+        color: #E24B4A;
+        margin-top: 5px;
+        display: block;
+    }
+
+    .validation-error {
+        background: #FCEBEB;
+        border-left: 3px solid #E24B4A;
+        border-radius: 8px;
+        padding: 12px 16px;
+        margin-bottom: 24px;
+        font-size: 0.87rem;
+        color: #A32D2D;
+    }
+
+    .password-hint {
+        font-size: 0.75rem;
+        color: #B4B2A9;
+        margin-top: 5px;
+    }
+
+    .btn-register {
+        width: 100%;
+        padding: 15px;
+        background: #0f0f0f;
+        color: #ffffff;
+        border: none;
+        border-radius: 10px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.92rem;
+        font-weight: 500;
+        letter-spacing: 1px;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        text-transform: uppercase;
+        margin-top: 8px;
+    }
+
+        .btn-register:hover {
+            background: #1D9E75;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px rgba(29,158,117,0.25);
+        }
+
+        .btn-register:active {
+            transform: translateY(0);
+        }
+
+    @@media (max-width: 900px) {
+        .register-left {
+            display: none;
+        }
+
+        .register-right {
+            padding: 40px 30px;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="register-wrapper">
+
+    <div class="register-left">
+        <div class="brand-logo">MVC<span>.</span></div>
+        <div class="brand-tagline">Your Learning Platform</div>
+        <div class="decorative-line"></div>
+        <ul class="steps-list">
+            <li>
+                <div class="step-num">1</div>
+                <span class="step-text">Create your account with a secure password</span>
+            </li>
+            <li>
+                <div class="step-num">2</div>
+                <span class="step-text">Access all instructors and courses instantly</span>
+            </li>
+            <li>
+                <div class="step-num">3</div>
+                <span class="step-text">Track your progress and manage your profile</span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="register-right">
+        <h1 class="register-heading">Create an account.</h1>
+        <p class="register-subheading">
+            Already have one? <a asp-controller="Account" asp-action="LogIn">Sign in</a>
+        </p>
+
+        <form asp-action="Registered" asp-controller="Account" method="post">
+            <div asp-validation-summary="ModelOnly" class="validation-error"></div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="Username">Username</label>
+                    <input asp-for="Username" type="text" placeholder="e.g. john_doe" />
+                    <span asp-validation-for="Username" class="field-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Email">Email</label>
+                    <input asp-for="Email" type="email" placeholder="you@example.com" />
+                    <span asp-validation-for="Email" class="field-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Password">Password</label>
+                    <input asp-for="Password" type="password" placeholder="••••••••" />
+                    <span class="password-hint">Min 6 chars, include a number & symbol</span>
+                    <span asp-validation-for="Password" class="field-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ConfirmPassword">Confirm Password</label>
+                    <input asp-for="ConfirmPassword" type="password" placeholder="••••••••" />
+                    <span asp-validation-for="ConfirmPassword" class="field-error"></span>
+                </div>
+
+                <div class="form-group full">
+                    <label asp-for="Address">Address</label>
+                    <input asp-for="Address" type="text" placeholder="123 Main St, City, Country" />
+                    <span asp-validation-for="Address" class="field-error"></span>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-register">Create Account</button>
+        </form>
+    </div>
+
 </div>
 
 @section Scripts {

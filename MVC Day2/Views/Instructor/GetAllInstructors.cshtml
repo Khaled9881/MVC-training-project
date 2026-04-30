@@ -1,4 +1,4 @@
-﻿@using MVC_Day2.Models.ViewModels
+﻿@* @using MVC_Day2.Models.ViewModels
 
 @model AllInstructorsViewModel
 
@@ -187,4 +187,428 @@
 <br />
 <br />
 
+ *@
 
+
+
+@using MVC_Day2.Models.ViewModels
+@model AllInstructorsViewModel
+@{
+    ViewData["Title"] = "Instructors";
+}
+
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap');
+
+    * {
+        box-sizing: border-box;
+    }
+
+    .page-wrapper {
+        font-family: 'DM Sans', sans-serif;
+        padding: 48px 40px;
+        background: #f7f7f5;
+        min-height: 100vh;
+    }
+
+    .page-header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        margin-bottom: 36px;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .page-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.2rem;
+        color: #0f0f0f;
+        font-weight: 700;
+        margin: 0;
+        line-height: 1.1;
+    }
+
+        .page-title span {
+            color: #1D9E75;
+        }
+
+    .page-subtitle {
+        font-size: 0.88rem;
+        color: #888780;
+        margin: 6px 0 0;
+        letter-spacing: 0.3px;
+    }
+
+    .btn-add {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 24px;
+        background: #0f0f0f;
+        color: #ffffff;
+        border: none;
+        border-radius: 10px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.88rem;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.25s ease;
+    }
+
+        .btn-add:hover {
+            background: #1D9E75;
+            color: #fff;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(29,158,117,0.25);
+        }
+
+        .btn-add .plus {
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+
+    /* Search bar */
+    .search-row {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 28px;
+        align-items: center;
+    }
+
+    .search-select {
+        flex: 1;
+        max-width: 320px;
+        padding: 12px 16px;
+        border: 1.5px solid #e8e8e8;
+        border-radius: 10px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.92rem;
+        color: #0f0f0f;
+        background: #ffffff;
+        outline: none;
+        transition: border-color 0.2s;
+        cursor: pointer;
+    }
+
+        .search-select:focus {
+            border-color: #1D9E75;
+        }
+
+    .btn-choose {
+        padding: 12px 24px;
+        background: #1D9E75;
+        color: #ffffff;
+        border: none;
+        border-radius: 10px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.88rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+        .btn-choose:hover {
+            background: #0f6e56;
+            transform: translateY(-1px);
+        }
+
+    /* Table card */
+    .table-card {
+        background: #ffffff;
+        border-radius: 16px;
+        border: 1px solid #ebebeb;
+        overflow: hidden;
+        margin-bottom: 28px;
+    }
+
+    .instructor-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+    }
+
+        .instructor-table thead {
+            background: #0f0f0f;
+        }
+
+            .instructor-table thead th {
+                padding: 16px 18px;
+                color: rgba(255,255,255,0.6);
+                font-size: 0.75rem;
+                font-weight: 500;
+                letter-spacing: 1.2px;
+                text-transform: uppercase;
+                text-align: left;
+                white-space: nowrap;
+            }
+
+        .instructor-table tbody tr {
+            border-bottom: 1px solid #f0f0ee;
+            transition: background 0.15s ease;
+        }
+
+            .instructor-table tbody tr:last-child {
+                border-bottom: none;
+            }
+
+            .instructor-table tbody tr:hover {
+                background: #f7fdf9;
+            }
+
+        .instructor-table tbody td {
+            padding: 14px 18px;
+            color: #2C2C2A;
+            vertical-align: middle;
+        }
+
+    .instructor-img {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #e8e8e8;
+    }
+
+    .instructor-name {
+        font-weight: 500;
+        color: #0f0f0f;
+    }
+
+    .salary-badge {
+        background: #EAF3DE;
+        color: #3B6D11;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        white-space: nowrap;
+    }
+
+    .dept-badge {
+        background: #E1F5EE;
+        color: #0F6E56;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+
+    .action-links {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .action-link {
+        padding: 5px 12px;
+        border-radius: 7px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.15s ease;
+        border: 1px solid transparent;
+    }
+
+    .action-view {
+        color: #185FA5;
+        background: #E6F1FB;
+        border-color: #B5D4F4;
+    }
+
+        .action-view:hover {
+            background: #B5D4F4;
+            color: #0C447C;
+        }
+
+    .action-edit {
+        color: #854F0B;
+        background: #FAEEDA;
+        border-color: #FAC775;
+    }
+
+        .action-edit:hover {
+            background: #FAC775;
+            color: #633806;
+        }
+
+    .action-delete {
+        color: #A32D2D;
+        background: #FCEBEB;
+        border-color: #F7C1C1;
+    }
+
+        .action-delete:hover {
+            background: #F7C1C1;
+            color: #791F1F;
+        }
+
+    /* Pagination */
+    .pagination-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        flex-wrap: wrap;
+        padding: 12px 0;
+    }
+
+    .page-btn {
+        padding: 8px 14px;
+        border-radius: 8px;
+        border: 1.5px solid #e8e8e8;
+        background: #ffffff;
+        color: #444441;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.85rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.15s ease;
+        cursor: pointer;
+    }
+
+        .page-btn:hover {
+            border-color: #1D9E75;
+            color: #1D9E75;
+        }
+
+        .page-btn.active {
+            background: #0f0f0f;
+            border-color: #0f0f0f;
+            color: #ffffff;
+            cursor: default;
+        }
+
+        .page-btn.disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+    .page-info {
+        text-align: center;
+        margin-top: 14px;
+        font-size: 0.82rem;
+        color: #888780;
+        letter-spacing: 0.3px;
+    }
+
+        .page-info strong {
+            color: #0f0f0f;
+        }
+</style>
+
+<div class="page-wrapper">
+
+    <!-- Header -->
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">All <span>Instructors</span></h1>
+            <p class="page-subtitle">Manage and browse your instructor roster</p>
+        </div>
+        <form action="/Instructor/AddInstructor" method="post">
+            <button type="submit" class="btn-add">
+                <span class="plus">+</span> Add Instructor
+            </button>
+        </form>
+    </div>
+
+    <!-- Search / Filter -->
+    <form action="/Instructor/Details" method="post" class="search-row">
+        <select class="search-select" name="id">
+            <option selected disabled>Jump to instructor...</option>
+            @for (int i = 0; i < Model.instructors.Count; i++)
+            {
+                <option value="@Model.instructors[i].Id">@Model.instructors[i].Name</option>
+            }
+        </select>
+        <button type="submit" class="btn-choose">Go to Profile</button>
+    </form>
+
+    <!-- Table -->
+    <div class="table-card">
+        <table class="instructor-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Instructor</th>
+                    <th>Photo</th>
+                    <th>Salary</th>
+                    <th>Address</th>
+                    <th>Course</th>
+                    <th>Department</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.instructors.Count; i++)
+                {
+                    <tr>
+                        <td style="color:#B4B2A9; font-size:0.82rem;">@Model.instructors[i].Id</td>
+                        <td class="instructor-name">@Model.instructors[i].Name</td>
+                        <td>
+                            <img src="@Model.instructors[i].Image"
+                                 alt="@Model.instructors[i].Name"
+                                 class="instructor-img"
+                                 onerror="this.style.display='none'" />
+                        </td>
+                        <td><span class="salary-badge">$@Model.instructors[i].Salary</span></td>
+                        <td style="color:#5F5E5A; font-size:0.87rem;">@Model.instructors[i].Address</td>
+                        <td style="font-size:0.87rem;">@Model.CourseNames[i]</td>
+                        <td><span class="dept-badge">@Model.DepartmentNames[i]</span></td>
+                        <td>
+                            <div class="action-links">
+                                <a class="action-link action-view"
+                                   href="@Url.Action("Details", "Instructor", new { Id = Model.instructors[i].Id })">View</a>
+                                <a class="action-link action-edit"
+                                   href="@Url.Action("EditInstructor", "Instructor", new { Id = Model.instructors[i].Id })">Edit</a>
+                                <a class="action-link action-delete"
+                                   href="@Url.Action("DeleteInstructor", "Instructor", new { Id = Model.instructors[i].Id })">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-row">
+        @if (Model.CurrentPage > 1)
+        {
+            <a class="page-btn" href="/Instructor/GetAllInstructors?pageNumber=@(Model.CurrentPage - 1)">&larr; Prev</a>
+        }
+        else
+        {
+            <span class="page-btn disabled">&larr; Prev</span>
+        }
+
+        @for (int i = 1; i <= Model.PagesCount; i++)
+        {
+            if (i == Model.CurrentPage)
+            {
+                <span class="page-btn active">@i</span>
+            }
+            else
+            {
+                <a class="page-btn" href="/Instructor/GetAllInstructors?pageNumber=@i">@i</a>
+            }
+        }
+
+        @if (Model.CurrentPage < Model.PagesCount)
+        {
+            <a class="page-btn" href="/Instructor/GetAllInstructors?pageNumber=@(Model.CurrentPage + 1)">Next &rarr;</a>
+        }
+        else
+        {
+            <span class="page-btn disabled">Next &rarr;</span>
+        }
+    </div>
+
+    <div class="page-info">
+        Page <strong>@Model.CurrentPage</strong> of <strong>@Model.PagesCount</strong>
+    </div>
+
+</div>

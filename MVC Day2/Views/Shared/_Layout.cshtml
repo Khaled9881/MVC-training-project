@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+﻿@* <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -75,6 +75,323 @@
             &copy; 2026 - MVC_Day2 - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html> *@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - MVC_Day2</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/MVC_Day2.styles.css" asp-append-version="true" />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #f7f7f5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ── Navbar ── */
+        .site-nav {
+            background: #0f0f0f;
+            padding: 0 40px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .nav-brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            color: #ffffff;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+            .nav-brand span {
+                color: #1D9E75;
+            }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            list-style: none;
+        }
+
+            .nav-links a {
+                font-size: 0.88rem;
+                font-weight: 400;
+                color: rgba(255,255,255,0.55);
+                text-decoration: none;
+                padding: 7px 14px;
+                border-radius: 8px;
+                transition: all 0.2s ease;
+                letter-spacing: 0.2px;
+            }
+
+                .nav-links a:hover {
+                    color: #ffffff;
+                    background: rgba(255,255,255,0.08);
+                }
+
+                .nav-links a.nav-active {
+                    color: #ffffff;
+                    background: rgba(255,255,255,0.1);
+                }
+
+        /* Sign Out pill */
+        .nav-signout a {
+            color: #E24B4A;
+            background: rgba(226,75,74,0.1);
+            border: 1px solid rgba(226,75,74,0.2);
+        }
+
+            .nav-signout a:hover {
+                background: rgba(226,75,74,0.2);
+                color: #f09595;
+            }
+
+        /* Add Role pill */
+        .nav-addrole a {
+            color: #1D9E75;
+            background: rgba(29,158,117,0.12);
+            border: 1px solid rgba(29,158,117,0.25);
+            font-weight: 500;
+        }
+
+            .nav-addrole a:hover {
+                background: rgba(29,158,117,0.22);
+                color: #5DCAA5;
+            }
+
+        /* Welcome badge */
+        .nav-welcome {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            margin-left: 6px;
+        }
+
+            .nav-welcome .avatar {
+                width: 26px;
+                height: 26px;
+                border-radius: 50%;
+                background: #1D9E75;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.7rem;
+                font-weight: 500;
+                color: #ffffff;
+                flex-shrink: 0;
+            }
+
+            .nav-welcome span {
+                font-size: 0.85rem;
+                color: rgba(255,255,255,0.75);
+                font-weight: 400;
+                max-width: 120px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .nav-welcome strong {
+                color: #ffffff;
+                font-weight: 500;
+            }
+
+        /* Hamburger (mobile) */
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 7px;
+            padding: 6px 10px;
+            cursor: pointer;
+            color: #ffffff;
+            font-size: 1.1rem;
+        }
+
+        /* ── Main content ── */
+        .site-main {
+            flex: 1;
+            width: 100%;
+        }
+
+            /* Remove Bootstrap container padding for full-width pages */
+            .site-main > .container {
+                max-width: 100%;
+                padding: 0;
+            }
+
+        /* ── Footer ── */
+        .site-footer {
+            background: #0f0f0f;
+            padding: 20px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .footer-brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            color: rgba(255,255,255,0.35);
+            letter-spacing: -0.3px;
+        }
+
+            .footer-brand span {
+                color: #1D9E75;
+            }
+
+        .footer-copy {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.25);
+        }
+
+            .footer-copy a {
+                color: rgba(255,255,255,0.4);
+                text-decoration: none;
+                transition: color 0.2s;
+            }
+
+                .footer-copy a:hover {
+                    color: #1D9E75;
+                }
+
+        @@media (max-width: 768px) {
+            .site-nav {
+                padding: 0 20px;
+            }
+
+            .nav-toggle {
+                display: block;
+            }
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 64px;
+                left: 0;
+                right: 0;
+                background: #0f0f0f;
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 16px 20px;
+                gap: 4px;
+                border-bottom: 1px solid rgba(255,255,255,0.08);
+            }
+
+                .nav-links.open {
+                    display: flex;
+                }
+
+            .site-footer {
+                padding: 20px;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="site-nav">
+        <a class="nav-brand" asp-controller="Home" asp-action="Index">MVC<span>.</span></a>
+
+        <button class="nav-toggle" onclick="this.nextElementSibling.classList.toggle('open')">&#9776;</button>
+
+        <ul class="nav-links" id="navLinks">
+            <li>
+                <a asp-controller="Home" asp-action="Index">Home</a>
+            </li>
+
+            @if (!User.Identity.IsAuthenticated)
+            {
+                <li>
+                    <a asp-controller="Account" asp-action="Register">Register</a>
+                </li>
+                <li>
+                    <a asp-controller="Account" asp-action="LogIn">Log In</a>
+                </li>
+            }
+            else
+            {
+                <li>
+                    <a asp-controller="Instructor" asp-action="GetAllInstructors">Instructors</a>
+                </li>
+
+                @if (User.IsInRole("Admin"))
+                {
+                    <li class="nav-addrole">
+                        <a asp-controller="Role" asp-action="AddRole">+ Add Role</a>
+                    </li>
+                }
+
+                <li class="nav-signout">
+                    <a asp-controller="Account" asp-action="SignOut">Sign Out</a>
+                </li>
+
+                <li>
+                    <div class="nav-welcome">
+                        <div class="avatar">@(User.Identity.Name?.Substring(0, 1).ToUpper())</div>
+                        <span>Welcome, <strong>@User.Identity.Name</strong></span>
+                    </div>
+                </li>
+            }
+        </ul>
+    </nav>
+
+    <!-- Page Content -->
+    <main class="site-main">
+        <div>
+            @RenderBody()
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-brand">MVC<span>.</span></div>
+        <div class="footer-copy">
+            &copy; 2026 MVC_Day2 &mdash;
+            <a asp-controller="Home" asp-action="Privacy">Privacy Policy</a>
+        </div>
+    </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
